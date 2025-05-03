@@ -1,3 +1,4 @@
+import os
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
@@ -75,7 +76,9 @@ def preprocess_pipeline(data: pd.DataFrame, target_column: str, save_path: str):
 
 # Panggil pipeline dan simpan hasilnya
 if __name__ == '__main__':
-    df = pd.read_csv('employee_data.csv')  # File input
+    os.makedirs('preprocessing', exist_ok=True)
+
+    df = pd.read_csv('employee_data.csv')  # File input, pastikan path benar
     target_column = 'Attrition'
     save_pipeline_path = 'preprocessing/preprocessing_pipeline.joblib'
 
@@ -83,13 +86,10 @@ if __name__ == '__main__':
         df, target_column=target_column, save_path=save_pipeline_path
     )
 
-    # Gabungkan hasil preprocessing (fitur + target)
-    combined_X = np.vstack((X_train, X_test))
-    combined_y = pd.concat([y_train, y_test], axis=0).values.reshape(-1, 1)
-    final_data = np.hstack((combined_X, combined_y))
+    # Simpan hasil preprocessing ke masing-masing file
+    pd.DataFrame(X_train).to_csv('preprocessing/X_train.csv', index=False, header=False)
+    pd.DataFrame(X_test).to_csv('preprocessing/X_test.csv', index=False, header=False)
+    pd.DataFrame(y_train).to_csv('preprocessing/y_train.csv', index=False, header=False)
+    pd.DataFrame(y_test).to_csv('preprocessing/y_test.csv', index=False, header=False)
 
-    # Simpan ke CSV
-    pd.DataFrame(final_data).to_csv(
-        'preprocessing/employee_data_preprocessed.csv', index=False, header=False
-    )
-    print("Preprocessed data berhasil disimpan ke preprocessing/employee_data_preprocessed.csv")
+    print("Data preprocessing berhasil disimpan ke folder preprocessing/")
