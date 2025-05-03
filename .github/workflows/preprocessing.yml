@@ -38,4 +38,5 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
           git add preprocessing/employee_data_preprocessed.csv
           git commit -m "Update preprocessed dataset" || echo "No changes to commit"
-          git push
+          git push origin master
+
